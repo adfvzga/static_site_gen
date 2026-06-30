@@ -1,44 +1,37 @@
 from typing import Optional
+from htmlnode import HTMLNode
 
 
-class HTMLNode:
+class LeafNode(HTMLNode):
     def __init__(
         self,
-        tag: Optional[str] = None,
-        value: Optional[str] = None,
-        children: Optional[list] = None,
+        tag: Optional[str],
+        value: str,
         props: Optional[dict] = None
     ):
-        self.tag: Optional[str] = tag
-        self.value: Optional[str] = value
-        self.children: Optional[list] = children
-        self.props: Optional[dict] = props
-
-    def to_html(self):
-        raise NotImplementedError
-
-    def props_to_html(self):
-        output_html = ""
-        if self.props is not None and len(self.props) > 0:
-            for property in self.props:
-                output_html += " " + property + "=" + self.props[property]
-        return output_html
-    
-    def __eq__(
-        self,
-        other
-    ):
-        if not isinstance(other, HTMLNode):
-            return False
-
-        return (
-            self.tag == other.tag
-            and self.value == other.value
-            and self.props_to_html() == other.props_to_html()
+        super().__init__(
+            tag=tag,
+            value=value,
+            children=None,
+            props=props
         )
 
+    def to_html(self):
+        output_html = ""
+        if self.value is None:
+            raise ValueError
+        if self.tag is None:
+            output_html = self.value
+        else:
+            output_html += (
+            f"<{self.tag}{self.props_to_html()}>"
+            f"{self.value}"
+            f"</{self.tag}>"
+        )
+        return output_html
+
     def __repr__(self):
-        output_representation = "HTMLNode("
+        output_representation = "LeafNode("
 
         if self.tag is not None:
             output_representation += self.tag
