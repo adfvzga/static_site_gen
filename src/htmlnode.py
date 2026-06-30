@@ -21,7 +21,7 @@ class HTMLNode:
         output_html = ""
         if self.props is not None and len(self.props) > 0:
             for property in self.props:
-                output_html += " " + property + "=" + self.props[property]
+                output_html += " " + property + "=\"" + self.props[property] + "\""
         return output_html
     
     def __eq__(
@@ -51,6 +51,13 @@ class HTMLNode:
         else:
             output_representation += "None"
         output_representation += ", "
+
+        if self.children is not None and len(self.children) > 0:
+            for child in self.children:
+                output_representation += str(child)
+                output_representation += ", "     
+            output_representation += "None"
+        output_representation += ", "                
 
         if self.props is not None and len(self.props) > 0:
             output_representation += self.props_to_html()
