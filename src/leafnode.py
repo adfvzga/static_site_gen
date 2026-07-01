@@ -17,13 +17,12 @@ class LeafNode(HTMLNode):
         )
 
     def to_html(self):
-        output_html = ""
         if self.value is None:
-            raise ValueError
+            raise ValueError("Leaf node value cannot be None")
         if self.tag is None:
             output_html = self.value
         else:
-            output_html += (
+            output_html = (
             f"<{self.tag}{self.props_to_html()}>"
             f"{self.value}"
             f"</{self.tag}>"
