@@ -18,6 +18,16 @@ class TestMarkdownToTextNodes(unittest.TestCase):
         self.assertEqual(new_nodes, [
                                         TextNode("This is text with a `code block` word", TextType.CODE)
                                     ])
+        
+    def test_positive_node_split_bold(self):
+        node = TextNode("This is text with a **bold** word", TextType.TEXT)
+        new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD_TEXT)
+        self.assertEqual(new_nodes, [
+                                TextNode("This is text with a ", TextType.TEXT),
+                                TextNode("bold", TextType.BOLD_TEXT),
+                                TextNode(" word", TextType.TEXT),
+                                    ])
+
 
 if __name__ == "__main__":
     unittest.main()
