@@ -113,3 +113,16 @@ def text_to_text_nodes(text):
     text_nodes_after_image_check = split_nodes_image(text_nodes_after_link_check)
 
     return text_nodes_after_image_check
+
+def markdown_to_blocks(markdown: str) -> list[str]:
+    # Split on double newline (markdown paragraph separator)
+    raw_blocks = markdown.split("\n\n")
+
+    # Strip whitespace and remove empty blocks
+    blocks = []
+    for block in raw_blocks:
+        cleaned = block.strip()
+        if cleaned:
+            blocks.append(cleaned)
+
+    return blocks
