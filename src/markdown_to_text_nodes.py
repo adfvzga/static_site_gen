@@ -1,4 +1,4 @@
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, BlockType
 import re
 
 def split_nodes_delimiter(
@@ -126,3 +126,18 @@ def markdown_to_blocks(markdown: str) -> list[str]:
             blocks.append(cleaned)
 
     return blocks
+
+def block_to_block_type(markdown_block: str) -> BlockType:
+    # Figure out the block type by the first characters using regex
+    if re.fullmatch(r"#{1,6}\s+.*", markdown_block):
+        return BlockType.HEADING
+    elif re.fullmatch(r"```([\s\S]*?)```", markdown_block):
+        return BlockType.CODE_BLOCK
+    elif re.fullmatch(r"^(?:> .*(?:\n|$))+", markdown_block):
+        return BlockType.QUOTE
+    elif re.fullmatch(r"^(?:- .+\s*(?:\n|$))+", markdown_block):
+        return BlockType.UNORDERED_LIST
+    elif re.fullmatch(r"^(?:\d\. .+\s*(?:\n|$))+", markdown_block):
+        return BlockType.ORDERED_LIST
+    else:
+        return BlockType.PARAGRAPH

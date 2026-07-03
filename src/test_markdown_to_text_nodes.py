@@ -1,5 +1,5 @@
 import unittest
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, BlockType
 from markdown_to_text_nodes import (
     split_nodes_delimiter, 
     extract_markdown_images, 
@@ -7,7 +7,8 @@ from markdown_to_text_nodes import (
     split_nodes_image,
     split_nodes_link,
     text_to_text_nodes,
-    markdown_to_blocks)
+    markdown_to_blocks,
+    block_to_block_type)
 
 class TestMarkdownToTextNodes(unittest.TestCase):
     def test_positive_node_split(self):
@@ -410,6 +411,67 @@ This is the same paragraph on a new line
                 "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
                 "- This is a list\n- with items",
             ],
+        )
+
+    def test_paragraph(self):
+        self.assertEqual(
+            block_to_block_type("This is a paragraph"),
+            BlockType.PARAGRAPH
+        )
+
+    def test_headings(self):
+        self.assertEqual(block_to_block_type("# h1"), BlockType.HEADING)
+        self.assertEqual(block_to_block_type("## h2"), BlockType.HEADING)
+        self.assertEqual(block_to_block_type("###### h6"), BlockType.HEADING)
+
+    def test_code_block(self):
+        md = """```python
+print('hello')
+```"""
+        self.assertEqual(
+            block_to_block_type(md),
+            BlockType.CODE_BLOCK
+        )
+
+    def test_quote_block(self):
+        md = """> line 1
+> line 2
+> line 3"""
+        self.assertEqual(
+            block_to_block_type(md),
+            BlockType.QUOTE
+        )
+
+    def test_unordered_list(self):
+        md = """- item 1
+- item 2
+- item 3"""
+        self.assertEqual(
+            block_to_block_type(md),
+            BlockType.UNORDERED_LIST
+        )
+
+    def test_ordered_list(self):
+        md = """1. first
+2. second
+3. third"""
+        self.assertEqual(
+            block_to_block_type(md),
+            BlockType.ORDERED_LIST
+        )
+
+    def test_paragraph_with_mixed_content(self):
+        md = """Hello
+- not a valid full list block"""
+        self.assertEqual(
+            block_to_block_type(md),
+            BlockType.PARAGRAPH
+        )
+
+    def test_single_line_quote(self):
+        self.assertEqual(
+            block_to_block_type("> hello"),
+            BlockType.QUOTE
         )
 
 if __name__ == "__main__":

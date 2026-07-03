@@ -11,7 +11,14 @@ class TextType(Enum):
     LINK = "LINK"
     IMAGE = "IMAGE"
 
-
+class BlockType(Enum):
+    PARAGRAPH = "PARAGRAPH"
+    HEADING = "HEADING"
+    CODE_BLOCK = "CODE_BLOCK"
+    QUOTE = "QUOTE"
+    UNORDERED_LIST = "UNORDERED_LIST"
+    ORDERED_LIST = "ORDERED_LIST"
+    
 class TextNode:
     def __init__(
         self,
