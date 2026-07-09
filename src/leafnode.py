@@ -22,11 +22,10 @@ class LeafNode(HTMLNode):
         if self.tag is None:
             output_html = self.value
         else:
-            output_html = (
-            f"<{self.tag}{self.props_to_html()}>"
-            f"{self.value}"
-            f"</{self.tag}>"
-        )
+            if self.tag == "img":
+                output_html = f"<{self.tag}{self.props_to_html()} />"
+            else:
+                output_html = f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
         return output_html
 
     def __repr__(self):

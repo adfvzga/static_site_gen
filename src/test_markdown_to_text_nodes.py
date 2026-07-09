@@ -8,7 +8,8 @@ from markdown_to_text_nodes import (
     split_nodes_link,
     text_to_text_nodes,
     markdown_to_blocks,
-    block_to_block_type)
+    block_to_block_type,
+    markdown_to_html_node)
 
 class TestMarkdownToTextNodes(unittest.TestCase):
     def test_positive_node_split(self):
@@ -474,5 +475,173 @@ print('hello')
             BlockType.QUOTE
         )
 
+    def test_paragraphs(self):
+        md = """
+    This is **bolded** paragraph
+    text in a p
+    tag here
+
+    This is another paragraph with _italic_ text and `code` here
+
+    """
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
+        )
+
+    def test_codeblock(self):
+        md = """
+    ```
+    This is text that _should_ remain
+    the **same** even with inline stuff
+    ```
+    """
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
+        )
+
+    def test_headings(self):
+        md = """
+# Heading 1
+
+## Heading 2
+
+### Heading 3
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading 3</h3></div>",
+        )
+
+    def test_blockquote(self):
+        md = """
+> This is a quote
+> spanning multiple lines
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This is a quote spanning multiple lines</blockquote></div>",
+        )
+
+    def test_unordered_list_conversion(self):
+        md = """
+- Item 1
+- Item 2
+- Item 3
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul></div>",
+        )
+
+    def test_ordered_list_conversion(self):
+        md = """
+1. First
+2. Second
+3. Third
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ol><li>First</li><li>Second</li><li>Third</li></ol></div>",
+        )
+
+    def test_inline_features(self):
+        md = """
+This has **bold**, _italic_, and `code`.
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>This has <b>bold</b>, <i>italic</i>, and <code>code</code>.</p></div>",
+        )
+
+    def test_links(self):
+        md = """
+This is a [link](https://example.com)
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            '<div><p>This is a <a href="https://example.com">link</a></p></div>',
+        )
+
+    def test_images(self):
+        md = """
+![alt text](https://example.com/image.png)
+
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            '<div><p><img src="https://example.com/image.png" alt="alt text" /></p></div>',
+        )
+
+    def test_mixed_blocks(self):
+        md = """
+# Heading
+
+Paragraph text here.
+
+- List item 1
+- List item 2
+
+> A quote
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><h1>Heading</h1><p>Paragraph text here.</p><ul><li>List item 1</li><li>List item 2</li></ul><blockquote>A quote</blockquote></div>",
+        )
+
+    def test_no_inline_nesting(self):
+        md = """
+This is **bold and _italic_ inside** but nesting not supported
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        # Expected: inner markdown is treated as plain text
+        self.assertEqual(
+            html,
+            "<div><p>This is <b>bold and _italic_ inside</b> but nesting not supported</p></div>",
+        )
+
+    def test_multiple_paragraph_spacing(self):
+        md = """
+Paragraph one.
+
+
+Paragraph two.
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>Paragraph one.</p><p>Paragraph two.</p></div>",
+        )
+
+    # def test_empty_input(self):
+    #     md = ""
+    #     node = markdown_to_html_node(md)
+    #     html = node.to_html()
+    #     self.assertEqual(html, "<div></div>")
 if __name__ == "__main__":
     unittest.main()
