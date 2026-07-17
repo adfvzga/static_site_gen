@@ -235,4 +235,3 @@ def markdown_to_html_node(markdown: str) -> HTMLNode:
         "div",
         html_node_list
     )
-        
