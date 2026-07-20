@@ -14,7 +14,7 @@ from markdown_to_nodes import (
 
 
 
-class TestMarkdownToTextNodes(unittest.TestCase):
+class TestMarkdownToNodes(unittest.TestCase):
     def test_positive_node_split(self):
         node = TextNode("This is text with a `code block` word", TextType.TEXT)
         new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)

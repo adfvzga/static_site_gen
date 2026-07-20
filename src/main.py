@@ -2,13 +2,12 @@ from textnode import *
 import shutil
 import os
 from copystatic import copy_files_recursive
-from page_generation import generate_page
+from page_generation import generate_pages_recursive
 
 public_directory = "./public"
 static_directory = "./static"
 template_path = "./template.html"
-content_path = "./content/index.md"
-destination_path = os.path.join(public_directory, "index.html")
+content_path = "./content"
 
 def main() -> None:
     # Clean public (output) directory
@@ -21,6 +20,6 @@ def main() -> None:
     copy_files_recursive(static_directory, public_directory)
 
     # Generate HTML and write it to public directory
-    generate_page(content_path, template_path, destination_path)
+    generate_pages_recursive(content_path, template_path, public_directory)
 
 main() 

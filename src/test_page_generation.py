@@ -2,7 +2,7 @@ import unittest
 import textwrap
 from page_generation import extract_title
 
-class TestMarkdownToTextNodes(unittest.TestCase):
+class TestPageGeneration(unittest.TestCase):
     def test_extract_title_simple(self):
         md = "# Hello"
 
