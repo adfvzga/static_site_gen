@@ -1,1 +1,1 @@
-python3 src/main.py "https://github.com/adfvzga/static_site_gen"
+python3 src/main.py "https://adfvzga.github.io/static_site_gen/"
